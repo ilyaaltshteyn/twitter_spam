@@ -144,9 +144,10 @@ class tweetDatabase:
     'beingsalmankhan', '10ronaldinho', 'charliesheen', 'google', 'nfl', 'waynerooney', \
     'claudialeitte', 'dalailam']
 
-    def __init__(self, tweets, batch_size = 50000):
+    def __init__(self, tweets, batch_size = 50000, sensitivity = .3):
         self.tweets = tweets
         self.batch_size = batch_size
+        self.sensitivity = sensitivity
         self.spam_tweets = []
         self.spam_tweets_stripped_and_lowered = []
         self.spam_indices = []
@@ -211,7 +212,7 @@ class tweetDatabase:
         working_batch_size = len(tweets)
         for x in vect2.transform(tweets):
             if len(n_neighbors) % 100 == 0: print "%r tweets analyzed out of %r for this batch" % (len(n_neighbors), working_batch_size)
-            neighbors = tree2.radius_neighbors(x, radius = .3)[1]
+            neighbors = tree2.radius_neighbors(x, radius = self.sensitivity)[1]
             n_neighbors.append(len(neighbors[0]))
             neighbors_indices.append(neighbors)
 

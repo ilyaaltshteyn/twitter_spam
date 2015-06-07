@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# This script pulls a random 1% of english language tweets from Twitter.
 
 from config import *
 from TwitterAPI import TwitterAPI

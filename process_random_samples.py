@@ -1,6 +1,9 @@
-# This script looks through samples of tweets from the mongo collection called
-# random_sample_june7th in the tweets database, and categorizes each tweet as
-# spam or not spam.
+# This script identifies spam in a random sample of tweets from the mongo database.
+# It does this on a collection of 10000 tweets at a time. After a tweet has been
+# included in a random sample once, it can't be included in a random sample again
+# until the next run.
+
+
 import tweetPreprocessor
 from pymongo import MongoClient
 import time
@@ -11,7 +14,7 @@ db = client.tweets
 collect = db.random_sample_june7th
 
 # Pick up a bunch of tweets, but only if there are at least 5000 in there:
-while True:
+def spam_run1():
     if collect.count( { 'spam_rating' : { '$exists' : False } } ) >= 10000:
         found = collect.find({ 'spam_rating' : { '$exists' : False } } ).limit(10000)
 
