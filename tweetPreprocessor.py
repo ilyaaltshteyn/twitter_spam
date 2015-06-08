@@ -125,25 +125,6 @@ class tweetDatabase:
     # Initialize some variables that need to be empty but will be updated by
     # functions later on:
 
-    common_twitter_handles = ['katyperry', 'justinbieber', 'barackobama', \
-    'taylorswift13', 'youtube', 'ladygaga', 'rihanna', 'jtimberlake', 'theellenshow', \
-    'britneyspears', 'instagram', 'twitter', 'cristiano', 'jlo', 'kimkardashian', \
-    'shakira', 'arianagrande', 'selenagomez', 'ddlovato', 'oprah', 'cnnbrk', 'pink', \
-    'jimmyfallon', 'harrystyles', 'onedirection', 'liltunechi', 'kaka', 'drake', \
-    'officialadele', 'niallofficial', 'aliciakeys', 'billgates', 'brunomars', \
-    'pitbull', 'realliampayne', 'kingjames', 'wizkhalifa', 'louistomlinson', \
-    'mileycyrus', 'eminem', 'nickiminaj', 'avrillavigne', 'espn', 'neymarjr', \
-    'emwatson', 'kevinhart4real', 'cnn', 'davidguetta', 'danieltosh', 'aplusk', \
-    'sportscenter', 'nytimes', 'conanobrien', 'actuallynph', 'mariahcarey', 'realmadrid', \
-    'xtina', 'zaynmalik', 'srbachchan', 'coldplay', 'fcbarcelona', 'kourtneykardash', \
-    'twitteres', 'nba', 'chrisbrown', 'vine', 'beyonce', 'jimcarrey', 'bbcbreaking', \
-    'khloekardashian', 'facebook', 'edsheeran', 'iamsrk', 'parishilton', 'ryanseacrest', \
-    'iamwill', 'ashleytisdale', 'agnezmo', 'narendramodi', 'leodicaprio', 'ivetesangalo', \
-    'tyrabanks', 'alejandrosanz', 'ubersoc', 'mtv', 'blakeshelton', 'snoopdogg', \
-    'aamirkhan', 'rickymartin', 'simoncowell', 'kanyewest', 'mohamadalarefe', \
-    'beingsalmankhan', '10ronaldinho', 'charliesheen', 'google', 'nfl', 'waynerooney', \
-    'claudialeitte', 'dalailam']
-
     def __init__(self, tweets, batch_size = 50000, sensitivity = .3):
         self.tweets = tweets
         self.batch_size = batch_size
@@ -152,6 +133,24 @@ class tweetDatabase:
         self.spam_tweets_stripped_and_lowered = []
         self.spam_indices = []
         self.tweets_modified = []
+        self.common_twitter_handles = ['katyperry', 'justinbieber', 'barackobama', \
+        'taylorswift13', 'youtube', 'ladygaga', 'rihanna', 'jtimberlake', 'theellenshow', \
+        'britneyspears', 'instagram', 'twitter', 'cristiano', 'jlo', 'kimkardashian', \
+        'shakira', 'arianagrande', 'selenagomez', 'ddlovato', 'oprah', 'cnnbrk', 'pink', \
+        'jimmyfallon', 'harrystyles', 'onedirection', 'liltunechi', 'kaka', 'drake', \
+        'officialadele', 'niallofficial', 'aliciakeys', 'billgates', 'brunomars', \
+        'pitbull', 'realliampayne', 'kingjames', 'wizkhalifa', 'louistomlinson', \
+        'mileycyrus', 'eminem', 'nickiminaj', 'avrillavigne', 'espn', 'neymarjr', \
+        'emwatson', 'kevinhart4real', 'cnn', 'davidguetta', 'danieltosh', 'aplusk', \
+        'sportscenter', 'nytimes', 'conanobrien', 'actuallynph', 'mariahcarey', 'realmadrid', \
+        'xtina', 'zaynmalik', 'srbachchan', 'coldplay', 'fcbarcelona', 'kourtneykardash', \
+        'twitteres', 'nba', 'chrisbrown', 'vine', 'beyonce', 'jimcarrey', 'bbcbreaking', \
+        'khloekardashian', 'facebook', 'edsheeran', 'iamsrk', 'parishilton', 'ryanseacrest', \
+        'iamwill', 'ashleytisdale', 'agnezmo', 'narendramodi', 'leodicaprio', 'ivetesangalo', \
+        'tyrabanks', 'alejandrosanz', 'ubersoc', 'mtv', 'blakeshelton', 'snoopdogg', \
+        'aamirkhan', 'rickymartin', 'simoncowell', 'kanyewest', 'mohamadalarefe', \
+        'beingsalmankhan', '10ronaldinho', 'charliesheen', 'google', 'nfl', 'waynerooney', \
+        'claudialeitte', 'dalailam']
 
     def strip_and_lower(self, tweets = None, apply_on_copy = 1):
         if apply_on_copy == 0:
