@@ -1,2 +1,4 @@
 *.txt
 *.pyc
+Presentation/*
+target_word_spam_data/*

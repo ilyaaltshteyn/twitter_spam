@@ -51,8 +51,9 @@ for i in spam_user_indices:
 spam_usernames = []
 spam_username_statuses_counts = [] # The mean of this is about 25k
 for user in spam_user_info:
-    spam_username_statuses_counts.append(user['statuses_count'])
-    spam_usernames.append(user['screen_name'])
+    if user['screen_name'] not in spam_usernames and user['statuses_count'] > 500:
+        spam_username_statuses_counts.append(user['statuses_count'])
+        spam_usernames.append(user['screen_name'])
 
 # Now find out how many statuses there are by those users in the dataset:
 all_spam = []
