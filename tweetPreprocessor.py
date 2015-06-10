@@ -31,14 +31,17 @@ class singleTweet:
     """
     
     def __init__(self, tweet):
+        """Makes the tweet a class variable and defines some regex for use in 
+        stripping later."""
+
         self.tweet = tweet
-        pass
+        self.urls = re.compile(r"(http\S+ ?)|(\S+\.com?\S+ ?)|(\S+\.ly?\S+ ?)|(\S+\.net?\S+ ?)|(\S+\.gov?\S+ ?)|(\S+\.edu?\S+ ?)|(\S+\.org?\S+ ?)")
+        self.username = re.compile(r"@\S+ ?")
 
     def strip_non_ascii(self):
         """Replaces all non-ascii characters in the tweet with a space. Returns
         tweet."""
-
-        return ''.join([i if ord(i) < 128 else ' ' for i in self.tweet])
+        self.tweet = ''.join([i if ord(i) < 128 else ' ' for i in self.tweet])
 
     punctuation = re.compile('[%s]' % re.escape(string.punctuation))
     punctuation_sans_hashtags = re.compile('[%s]' % 
@@ -58,11 +61,9 @@ class singleTweet:
 
         self.tweet = unicode(self.tweet, "utf-8")
 
-    urls = re.compile(r"""(http\S+ ?)|(\S+\.com?\S+ ?)|(\S+\.ly?\S+ ?)|(\S+\.net?\S+ ?)|(\S+\.gov?\S+ ?)|(\S+\.edu?\S+ ?)|(\S+\.org?\S+ ?)""")
-
     def strip_links(self):
-        """Uses regex to remove anything that looks like a link in the tweet.
-        Identifies text that looks like a tweet using URL suffixes."""
+        """Uses self.urls regex to remove anything that looks like a link in 
+        the tweet. Identifies text that looks like a tweet using URL suffixes."""
 
         self.tweet = self.urls.sub('', self.tweet)
 
@@ -76,14 +77,24 @@ class singleTweet:
 
         self.tweet = self.tweet.replace('\n', '')
 
-    def strip_and_lower(self):
+    def strip_mentions(self):
+        """Uses teh self.username regex to strip @ mentions (i.e. usernames of 
+        other Twitter users) from the tweet."""
+
+        self.tweet = self.username.sub('', self.tweet)
+
+    def strip_and_lower(self, strip_non_ascii = 0, strip_punctuation = 0, strip_mentions = 1):
         """Performs all stripping functions (including stripping non-ascii chars)
         and lowercases the tweet. Does NOT convert it to utf-8."""
 
-        self.strip_non_ascii()
+        if strip_mentions == 1:
+            self.strip_mentions()
+        if strip_non_ascii == 1:
+            self.strip_non_ascii()
         self.strip_links()
         self.lowercase()
-        self.strip_punctuation()
+        if strip_punctuation == 1:
+            self.strip_punctuation()
         self.strip_newlines()
 
 
@@ -211,9 +222,14 @@ class tweetDatabase:
         working_batch_size = len(tweets)
         for x in vect2.transform(tweets):
             if len(n_neighbors) % 100 == 0: print "%r tweets analyzed out of %r for this batch" % (len(n_neighbors), working_batch_size)
+            # Only deal with tweets that are longer than 3 words.
             neighbors = tree2.radius_neighbors(x, radius = self.sensitivity)[1]
-            n_neighbors.append(len(neighbors[0]))
-            neighbors_indices.append(neighbors)
+            if x.getnnz() > 3:
+                n_neighbors.append(len(neighbors[0]))
+                neighbors_indices.append(neighbors)
+            else:
+                n_neighbors.append(1)
+                neighbors_indices.append(np.array([np.array([0])]))
 
         neighbors_indices = [x for x in range(len(neighbors_indices)) if len(neighbors_indices[x][0]) > 2]
 
@@ -233,6 +249,8 @@ class tweetDatabase:
         for batch in batches:
             print "NOW WORKING ON BATCH %r out of %r" % (batch_num + 1, len(batches))
             neighbors_indices = self.single_batch(batch[1])
+            # Add batch_num * batch_size to conver the index of the first tweet 
+            # in the batch to the index of that tweet in the original database.
             self.spam_tweets.extend([self.tweets[t + batch_num*self.batch_size] for t in neighbors_indices])
             self.spam_indices.extend([x + batch_num*self.batch_size for x in neighbors_indices])
             batch_num += 1
@@ -250,18 +268,20 @@ class tweetDatabase:
         self.spam_tweets_stripped_and_lowered = sorted(self.spam_tweets_stripped_and_lowered)
 
 
-# # Pull some tweets from my mongo database. Note: tweets that are being pulled are all from the same 1-week period.
+# Pull some tweets from my mongo database. Note: tweets that are being pulled are all from the same 1-week period.
 # from pymongo import MongoClient
 # client = MongoClient()
 # db = client.tweets
 # collect = db.test_collection #change this be the right collection!
 
-# found_tweets = collect.find()
+# found_tweets = collect.find({'text' : { '$exists' : 1}}).limit(500)
 # tweets = []
 # for found in found_tweets:
 #     tweets.append(found)
-# tweets = tweets[150000:350000]
-# tweets = [x['text'] for x in tweets[:15000]]
+# tweets = [x['text'] for x in tweets]
+
+# tweetdb = tweetDatabase(tweets)
+# tweetdb.identify_spam()
 
 # def strip_non_ascii(text):
 #     """Replaces all non-ascii characters in the tweet with a space. Returns

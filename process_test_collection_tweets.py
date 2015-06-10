@@ -38,9 +38,9 @@ while True:
             t_id = tweet_ids[tweet_index] # t_id is the id of the tweet in the mongodb!
             if tweet_index % 100 == 0: print 'finished %r tweets' % str(tweet_index)
             if tweet_index in spam_indices:
-                collect.update({ '_id' : t_id}, {'$set' : {'spam_rating' : 1}}, False)
+                collect.update({ '_id' : t_id}, {'$set' : {'spam_rating' : 1, 'tweet_processor_version' : 2}}, False)
             else:
-                collect.update({ '_id' : t_id}, {'$set' : {'spam_rating' : 0}}, False)
+                collect.update({ '_id' : t_id}, {'$set' : {'spam_rating' : 0, 'tweet_processor_version' : 2}}, False)
 
         # If there aren't at least 5000 tweets to work with, then break:
     else:
