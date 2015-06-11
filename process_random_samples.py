@@ -14,45 +14,6 @@ client = MongoClient()
 db = client.tweets
 collect = db.random_sample_june7th
 
-# First, add a random number to each document for each run.
-
-# def add_random_numbers():
-#     """Adds 3 fields to each document that doesn't yet have them, up to 5k documents.
-#     Each of the 3 fields contains a random integer between 1k and 10k. The fields
-#     are called random_number_1, random_number_2, and random_number_3. """
-    
-#     found = collect.find( { 'random_number_1' : { '$exists' : False } } ).limit(5000)
-#     while found.alive == True:
-#         try:
-#             next_one = found.next()
-#             mongo_id = next_one['_id']
-#             next_one['random_number_1'] = randint(1000,10000)
-#             collect.update({'_id':mongo_id}, {"$set": next_one}, upsert = False)
-#         except:
-#             break
-
-#     found = collect.find( { 'random_number_2' : { '$exists' : False } } ).limit(5000)
-#     while found.alive == True:
-#         try:
-#             next_one = found.next()
-#             mongo_id = next_one['_id']
-#             next_one['random_number_2'] = randint(1000,10000)
-#             collect.update({'_id':mongo_id}, {"$set": next_one}, upsert = False)
-#         except:
-#             break
-
-#     found = collect.find( { 'random_number_3' : { '$exists' : False } } ).limit(5000)
-#     while found.alive == True:
-#         try:
-#             next_one = found.next()
-#             mongo_id = next_one['_id']
-#             next_one['random_number_3'] = randint(1000,10000)
-#             collect.update({'_id':mongo_id}, {"$set": next_one}, upsert = False)
-#         except:
-#             break
-
-# add_random_numbers()
-
 # Pick up a bunch of tweets, but only if there are at least 10000 in there:
 def spam_run(run_number):
     """Takes a random collection of tweets that haven't yet been run through the

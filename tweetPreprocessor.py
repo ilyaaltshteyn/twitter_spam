@@ -144,7 +144,9 @@ class tweetDatabase:
         self.spam_tweets_stripped_and_lowered = []
         self.spam_indices = []
         self.tweets_modified = []
-        self.common_twitter_handles = ['katyperry', 'justinbieber', 'barackobama', \
+        # custom_stop_words includes common twitter handles and words that tend
+        # to be only in non-spam tweets that are misclassified as spam.
+        self.custom_stop_words = ['katyperry', 'justinbieber', 'barackobama', \
         'taylorswift13', 'youtube', 'ladygaga', 'rihanna', 'jtimberlake', 'theellenshow', \
         'britneyspears', 'instagram', 'twitter', 'cristiano', 'jlo', 'kimkardashian', \
         'shakira', 'arianagrande', 'selenagomez', 'ddlovato', 'oprah', 'cnnbrk', 'pink', \
@@ -161,7 +163,9 @@ class tweetDatabase:
         'tyrabanks', 'alejandrosanz', 'ubersoc', 'mtv', 'blakeshelton', 'snoopdogg', \
         'aamirkhan', 'rickymartin', 'simoncowell', 'kanyewest', 'mohamadalarefe', \
         'beingsalmankhan', '10ronaldinho', 'charliesheen', 'google', 'nfl', 'waynerooney', \
-        'claudialeitte', 'dalailam']
+        'claudialeitte', 'dalailam', 'miss', 'love', 'when', 'goodmorning', 'goodnight',
+        'morning', 'night']
+
 
     def strip_and_lower(self, tweets = None, apply_on_copy = 1):
         if apply_on_copy == 0:
@@ -211,7 +215,7 @@ class tweetDatabase:
         this function."""
 
         # Vectorize and fit tree:
-        vect2 = CountVectorizer(stop_words = self.common_twitter_handles)
+        vect2 = CountVectorizer(stop_words = self.custom_stop_words)
         X2 = vect2.fit_transform(tweets)
         tree2 = LSHForest()
         tree2.fit(X2)
@@ -224,7 +228,7 @@ class tweetDatabase:
             if len(n_neighbors) % 100 == 0: print "%r tweets analyzed out of %r for this batch" % (len(n_neighbors), working_batch_size)
             # Only deal with tweets that are longer than 3 words.
             neighbors = tree2.radius_neighbors(x, radius = self.sensitivity)[1]
-            if x.getnnz() > 3:
+            if x.getnnz() > 2:
                 n_neighbors.append(len(neighbors[0]))
                 neighbors_indices.append(neighbors)
             else:
@@ -256,7 +260,7 @@ class tweetDatabase:
             batch_num += 1
 
     def strip_and_lower_spam(self):
-        """Applies teh strip and lower function to the spam tweets and puts the
+        """Applies the strip and lower function to the spam tweets and puts the
         stripped and lowered spam tweets into the .spam_tweets_stripped_and_lowered
         object. If sort isn't turned to 0, it'll also sort them for easy viewing."""
         
@@ -267,6 +271,26 @@ class tweetDatabase:
 
         self.spam_tweets_stripped_and_lowered = sorted(self.spam_tweets_stripped_and_lowered)
 
+
+# from pymongo import MongoClient
+# import tweetPreprocessor
+# client = MongoClient()
+# db = client.tweets
+# collect = db.random_sample_june7th
+
+# found = db.test_collection.find({'$and' : [{'tweet_processor_version' : 2}, {'spam_rating' : 1}]})
+
+# count = 0
+# allt = []
+# while found.alive == True:
+#     with open('tweetprocessor_v2_spam_sample.txt', 'a') as outfile:
+#         count +=1
+#         if count == 250: break
+#         t = tweetPreprocessor.singleTweet(found.next()['text'])
+#         t.strip_non_ascii()
+#         t.strip_newlines()
+#         allt.append(t.tweet)
+#         outfile.write(t.tweet + '\n')  
 
 # Pull some tweets from my mongo database. Note: tweets that are being pulled are all from the same 1-week period.
 # from pymongo import MongoClient

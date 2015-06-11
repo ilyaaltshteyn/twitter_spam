@@ -1,5 +1,5 @@
 # This script looks through samples of tweets from the mongo collection called
-# random_sample_june7th in the tweets database, and categorizes each tweet as
+# test_collection in the tweets database, and categorizes each tweet as
 # spam or not spam.
 import tweetPreprocessor
 from pymongo import MongoClient
@@ -10,7 +10,7 @@ client = MongoClient()
 db = client.tweets
 collect = db.test_collection
 
-# Pick up a bunch of tweets, but only if there are at least 5000 in there:
+# Pick up a bunch of tweets, but only if there are at least 10k in there:
 while True:
     if collect.count( {'$and' : [{ 'spam_rating' : { '$exists' : False } },
                                  { 'text' : { '$exists' : True }},
