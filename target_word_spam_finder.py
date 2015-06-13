@@ -11,7 +11,7 @@ db = client.tweets
 collect = db.test_collection
 
 # Make list of major brands/products/target words whose tweets you want to find:
-target_words = ['think']
+target_words = ['itunes', 'androidgames', 'iphonegames', 'nyt', '"national enquirer"']
 
 # Get dataset for each major target_word and product:
 target_word_data = {}
@@ -36,7 +36,7 @@ for target_word in target_words:
     tweetsdb.identify_spam()
     tweetsdb.strip_and_lower_spam()
     spam_tweets[target_word] = tweetsdb.spam_tweets_stripped_and_lowered
-    with open(path + 'raw_spam_' + str(target_word), 'w') as outfile:
+    with open(path + 'v2_raw_spam_' + str(target_word), 'w') as outfile:
         for t in spam_tweets[target_word]:
             outfile.write(remove_non_ascii(t) + '\n')
 
@@ -45,7 +45,7 @@ for target_word in target_words:
     spam_percent[target_word] = float(len(spam_tweets[target_word]))/len(target_word_data[target_word])
 
 # Write spam percents to a masterfile:
-with open('target_word_spam_summary.txt', 'a') as outfile:
+with open('v2_target_word_spam_summary.txt', 'a') as outfile:
     for k, v in spam_percent.items():
         outfile.write(k + ',' + str(v) + '\n')
 
@@ -60,12 +60,10 @@ with open('target_word_spam_summary.txt', 'a') as outfile:
 
 
 def printer(path, target_word_name, total_data_count, percent_spam, sorted_spam):
-    with open(path + 'spam_from_%s.txt' % target_word_name, 'w') as outfile:
+    with open(path + 'v2_spam_from_%s.txt' % target_word_name, 'w') as outfile:
         outfile.write('There are %r tweets from %r, and they are %r spam' % (total_data_count, target_word_name, percent_spam * 100) + '\n')
         for datapoint in sorted_spam:
             outfile.write(remove_non_ascii(datapoint) + '\n')
-
-path = '/Users/ilya/Projects/twitter_spam/target_word_spam_data/'
 
 for target_word in target_words:
     printer(path, target_word, len(target_word_data[target_word]), spam_percent[target_word], spam_tweets[target_word])

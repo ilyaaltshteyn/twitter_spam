@@ -12,10 +12,10 @@ collect = db.test_collection
 
 # Pick up a bunch of tweets, but only if there are at least 10k in there:
 while True:
-    if collect.count( {'$and' : [{ 'spam_rating' : { '$exists' : False } },
+    if collect.count( {'$and' : [{ 'tweet_processor_version' : { '$exists' : False } },
                                  { 'text' : { '$exists' : True }},
                                  { 'user' : { '$exists' : True }} ] } ) >= 10000:
-        found = collect.find( {'$and' : [{ 'spam_rating' : { '$exists' : False } },
+        found = collect.find( {'$and' : [{ 'tweet_processor_version' : { '$exists' : False } },
                                  { 'text' : { '$exists' : True }},
                                  { 'user' : { '$exists' : True }} ] } ).limit(10000)
 
