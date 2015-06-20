@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+body {
+  font: 12px "Helvetica Neue";
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: #8B0000;
+  stroke-width: 1.5px
+  shape-rendering: crispEdges;
+}
+
+</style>
+<body>
+
+<!-- load the d3.js library -->    
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+
+// Set the dimensions of the canvas / graph
+var margin = {top: 30, right: 28, bottom: 50, left: 65},
+    width = 790 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+// Parse the hour / time
+var parseHour = d3.time.format("%H").parse;
+
+// Set the ranges
+var x = d3.scale.linear().range([0, width]);
+var y = d3.scale.linear().range([height, 0]);
+
+// Define the axes
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(8)
+    .tickValues([2,6,10,14,18,22])
+    .tickFormat(function(d, i) { return ['8pm', 'Midnight', '4am', '8am', 'Noon','4pm'][i]});
+
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(5);
+
+// Define the line
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.hour); })
+    .y(function(d) { return y(d.spam_percent); });
+
+// Adds the svg canvas
+var svg = d3.select("body")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+
+// Add background color
+svg.append("rect")
+    .attr("width", width*2)
+    .attr("height", height*2)
+    .attr("x", -100)
+    .attr("y", -100)
+    .attr("fill", "white");
+
+// Add vertical lines
+var add_line = function(x1, y1, x2, y2) {
+  svg.append("line")
+    .style("stroke", "black")
+    .attr("x1", x1)
+    .attr("y1", y1)
+    .attr("x2", x2)
+    .attr("y2", y2)
+    .style("stroke-dasharray", ("3, 3"))
+    .style("stroke-opacity", 0.2)
+    .style("stroke-width", "1px")
+    .style("shape-rendering", "crispEdges"); }
+
+add_line(177, 0, 177, height)
+add_line(415, 0, 415, height)
+
+// Add grey box for nighttime
+svg.append("rect")
+        .attr("x", 177)
+        .attr("y", 0)
+        .attr("width", 415-177)
+        .attr("height", height)
+        .attr("shape-rendering", "crispEdges")
+        .style("fill", "black")
+        .style("fill-opacity", ".075");
+
+var add_text = function(x, y, text, transform) {
+    svg.append("text")
+      .attr("transform", transform)
+      .attr("y", y)
+      .attr("x", x)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .style("font-size", "13px")
+      .style("font-family", "Helvetica Neue")
+      .text(text);
+}
+
+// add_text(295, 115, "Nighttime in USA")
+add_text(width/2, height + margin.bottom - 20, "USA Mountain Time (UTC-06:00)")
+add_text(-height/2,-60, "Percent spam tweets", "rotate(-90)")
+
+// Get the data
+d3.csv("spam_per_hour.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.hour = +d.hour;
+        d.spam_percent = +d.spam_percent;
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.hour; }));
+    y.domain([0, d3.max(data, function(d) { return d.spam_percent; })]);
+
+    // Add the valueline path.
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(data));
+
+    // Add the X Axis
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    // Add the Y Axis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+});
+
+</script>
+</body>
