@@ -12,12 +12,12 @@ collect = db.test_collection
 
 # Pick up a bunch of tweets, but only if there are at least 10k in there:
 while True:
-    if collect.count( {'$and' : [{ 'tweet_processor_version' : { '$exists' : False } },
+    if collect.count( {'$and' : [{ 'spam_rating_5ktweetbatches' : { '$exists' : False }},
                                  { 'text' : { '$exists' : True }},
-                                 { 'user' : { '$exists' : True }} ] } ) >= 10000:
-        found = collect.find( {'$and' : [{ 'tweet_processor_version' : { '$exists' : False } },
-                                 { 'text' : { '$exists' : True }},
-                                 { 'user' : { '$exists' : True }} ] } ).limit(10000)
+                                 { 'user' : { '$exists' : True }} ] } ) >= 5000:
+        found = collect.find( {'$and' : [{ 'spam_rating_5ktweetbatches' : { '$exists' : False }},
+                                         { 'text' : { '$exists' : True }},
+                                         { 'user' : { '$exists' : True }} ] } ).limit(5000)
 
         # Turn them into two lists: one of ids, one of tweet text:
         tweet_ids = []
@@ -27,7 +27,7 @@ while True:
             tweet_texts.append(tweet['text'])
             tweet_ids.append(tweet['_id'])
 
-        db1 = tweetPreprocessor.tweetDatabase(tweet_texts, batch_size = 10000)
+        db1 = tweetPreprocessor.tweetDatabase(tweet_texts, batch_size = 5000, sensitivity = .28)
         db1.identify_spam()
         db1.strip_and_lower_spam()
         spam_indices = db1.spam_indices
@@ -38,9 +38,9 @@ while True:
             t_id = tweet_ids[tweet_index] # t_id is the id of the tweet in the mongodb!
             if tweet_index % 100 == 0: print 'finished %r tweets' % str(tweet_index)
             if tweet_index in spam_indices:
-                collect.update({ '_id' : t_id}, {'$set' : {'spam_rating' : 1, 'tweet_processor_version' : 2}}, False)
+                collect.update({ '_id' : t_id}, {'$set' : {'spam_rating_5ktweetbatches' : 1, 'tweet_processor_v2_5k_tweet_batches' : 1}}, False)
             else:
-                collect.update({ '_id' : t_id}, {'$set' : {'spam_rating' : 0, 'tweet_processor_version' : 2}}, False)
+                collect.update({ '_id' : t_id}, {'$set' : {'spam_rating_5ktweetbatches' : 0, 'tweet_processor_v2_5k_tweet_batches' : 1}}, False)
 
         # If there aren't at least 5000 tweets to work with, then break:
     else:
