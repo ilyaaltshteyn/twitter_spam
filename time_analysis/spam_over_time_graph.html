@@ -108,7 +108,7 @@ var add_text = function(x, y, text, transform) {
       .attr("x", x)
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .style("font-size", "13px")
+      .style("font-size", "14px")
       .style("font-family", "Helvetica Neue")
       .text(text);
 }
@@ -116,6 +116,7 @@ var add_text = function(x, y, text, transform) {
 // add_text(295, 115, "Nighttime in USA")
 add_text(width/2, height + margin.bottom - 20, "USA Mountain Time (UTC-06:00)")
 add_text(-height/2,-60, "Percent spam tweets", "rotate(-90)")
+add_text(width/2,-25, "The proportion of spam in the American twitterverse goes up at night")
 
 // Get the data
 d3.csv("spam_per_hour.csv", function(error, data) {

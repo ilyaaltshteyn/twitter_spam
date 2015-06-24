@@ -164,8 +164,12 @@ class tweetDatabase:
         'aamirkhan', 'rickymartin', 'simoncowell', 'kanyewest', 'mohamadalarefe', \
         'beingsalmankhan', '10ronaldinho', 'charliesheen', 'google', 'nfl', 'waynerooney', \
         'claudialeitte', 'dalailam', 'miss', 'love', 'when', 'goodmorning', 'goodnight',
-        'morning', 'night']
-
+        'morning', 'night', 'same', 'such', '&gt', '&lt', 'coo', 'high', 'awake',
+        '11:11', 'birthday', 'text', 'god', 'so', 'much',
+        'hot', 'ask', 'wanna', 'love', 'hate', 'bored', 'sleep', 'nap',
+        'fuck', 'him', 'her', 'honestly', 'beach', 'sucks', 'welcome',
+        'gosh', 'happy', 'sad', 'tired', 'hungry', 'the', 'be', 'to', 'of',
+        'and', 'a', 'in', 'that', 'have']
 
     def strip_and_lower(self, tweets = None, apply_on_copy = 1):
         if apply_on_copy == 0:
@@ -270,109 +274,3 @@ class tweetDatabase:
                 self.spam_tweets_stripped_and_lowered.append(t.tweet)
 
         self.spam_tweets_stripped_and_lowered = sorted(self.spam_tweets_stripped_and_lowered)
-
-
-# from pymongo import MongoClient
-# import tweetPreprocessor
-# client = MongoClient()
-# db = client.tweets
-# collect = db.random_sample_june7th
-
-# found = db.test_collection.find({'$and' : [{'tweet_processor_version' : 2}, {'spam_rating' : 1}]})
-
-# count = 0
-# allt = []
-# while found.alive == True:
-#     with open('tweetprocessor_v2_spam_sample.txt', 'a') as outfile:
-#         count +=1
-#         if count == 250: break
-#         t = tweetPreprocessor.singleTweet(found.next()['text'])
-#         t.strip_non_ascii()
-#         t.strip_newlines()
-#         allt.append(t.tweet)
-#         outfile.write(t.tweet + '\n')  
-
-# Pull some tweets from my mongo database. Note: tweets that are being pulled are all from the same 1-week period.
-# from pymongo import MongoClient
-# client = MongoClient()
-# db = client.tweets
-# collect = db.test_collection #change this be the right collection!
-
-# found_tweets = collect.find({'text' : { '$exists' : 1}}).limit(500)
-# tweets = []
-# for found in found_tweets:
-#     tweets.append(found)
-# tweets = [x['text'] for x in tweets]
-
-# tweetdb = tweetDatabase(tweets)
-# tweetdb.identify_spam()
-
-# def strip_non_ascii(text):
-#     """Replaces all non-ascii characters in the tweet with a space. Returns
-#     tweet."""
-
-#     return ''.join([i if ord(i) < 128 else ' ' for i in text])
-
-# # batch_sizes_to_try = [50000]
-# # seconds_per_tweet = []
-# percent_spam_tweets = []
-# # for b in batch_sizes_to_try:
-#     # tweet_db_main = []
-#     # ind = 0
-#     # for t in tweets:
-#     #     ind +=1
-#     #     if ind == b: break
-#     #     tweet_db_main.append(t['text'])
-
-
-# # Run on same data with different batch sizes:
-# test = tweetDatabase(tweets = tweets, batch_size = 15000)
-# test.identify_spam()
-# percent_spam = len(test.spam_tweets)/float(len(tweets))
-# percent_spam_tweets.append(percent_spam)
-# print percent_spam_tweets
-
-# test2 = tweetDatabase(tweets = tweets, batch_size = 7500)
-# test2.identify_spam()
-# percent_spam = len(test2.spam_tweets)/float(len(tweets))
-# percent_spam_tweets.append(percent_spam)
-# print percent_spam_tweets
-
-# test3 = tweetDatabase(tweets = tweets, batch_size = 3750)
-# test3.identify_spam()
-# percent_spam = len(test3.spam_tweets)/float(len(tweets))
-# percent_spam_tweets.append(percent_spam)
-# print percent_spam_tweets
-
-# test4 = tweetDatabase(tweets = tweets, batch_size = 1000)
-# test4.identify_spam()
-# percent_spam = len(test4.spam_tweets)/float(len(tweets))
-# percent_spam_tweets.append(percent_spam)
-# print percent_spam_tweets
-
-
-# test.strip_and_lower_spam()
-# spam_count = len(test.spam_tweets_stripped_and_lowered)
-# with open('nonovernight_test_3_total_spam_in_15k_tweets_with_15k_batches.txt', 'w') as outfile:
-#     outfile.write('The total amount of spam in 15 tweets with 15k batches was %r\n' %spam_count)
-#     for x in test.spam_tweets_stripped_and_lowered:
-#         outfile.write(strip_non_ascii(x) + '\n')
-
-# # from matplotlib import pyplot as plt
-
-# # # plt.plot(batch_sizes_to_try, seconds_per_tweet)
-# # # plt.title("Batch sizes vs seconds per tweet", fontsize = 16)
-# # # plt.xlabel("Batch sizes", fontsize = 15)
-# # # plt.ylabel("Seconds per tweet", fontsize = 15)
-# # # plt.savefig("fig1_overnight_2.png")
-
-# # # plt.plot(batch_sizes_to_try, percent_spam_tweets)
-# # # plt.title("Batch sizes vs percent spam tweets", fontsize = 16)
-# # # plt.xlabel("Batch sizes", fontsize = 15)
-# # # plt.ylabel("Percent spam tweets", fontsize = 15)
-# # # plt.savefig("fig2_overnight_2.png")
-
-
-# # # with open('testy.txt', 'w') as outfile:
-# # #     for x in test.spam_tweets_stripped_and_lowered:
-# # #         outfile.write(strip_non_ascii(x) + '\n')
