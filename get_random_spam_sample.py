@@ -10,7 +10,7 @@ from random import random
 # Establish mongo info:
 client = MongoClient()
 db = client.tweets
-collect = db.random_sample_june7th
+collect = db.test_collection
 
 docs_not_yet_included_in_this_run = collect.count( { 'spam_rating' : 1 } )
 tweet_ids = []
@@ -33,6 +33,6 @@ for t1 in range(len(tweet_texts)):
 print stripped_tweets[:3]
 print tweet_ids[:3]
 
-with open('random_spam_tweets.txt', 'w') as outfile:
+with open('random_spam_tweets2.txt', 'w') as outfile:
     for x in range(len(tweet_texts)):
         outfile.write(str(tweet_ids[x]) + ',' + stripped_tweets[x] + '\n')

@@ -36,6 +36,3 @@ for x in range(100):
             collect.update({ '_id' : t_id}, {'$set' : {'spam_rating' : 1, 'tweet_processor_version' : 2}}, False)
         else:
             collect.update({ '_id' : t_id}, {'$set' : {'spam_rating' : 0, 'tweet_processor_version' : 2}}, False)
-
-
-

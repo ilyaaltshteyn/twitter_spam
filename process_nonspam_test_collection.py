@@ -43,9 +43,3 @@ def spam_run():
                 collect.update({ '_id' : t_id}, {'$set' : { 'spam_rating_on_nonspam' : 1}}, False)
             else:
                 collect.update({ '_id' : t_id}, {'$set' : { 'spam_rating_on_nonspam' : 0}}, False)
-
-spam_run()
-spam_run()
-spam_run()
-spam_run()
-spam_run()

@@ -49,16 +49,6 @@ with open('v2_target_word_spam_summary.txt', 'a') as outfile:
     for k, v in spam_percent.items():
         outfile.write(k + ',' + str(v) + '\n')
 
-# Sort spam_percent dictionary by spam_percent:
-# import operator
-# sorted_spam_percents = sorted(spam_percent.items(), key=operator.itemgetter(1))
-
-# Detect spam and get stats on it:
-
-
-# Print spam and stats on it to disk:
-
-
 def printer(path, target_word_name, total_data_count, percent_spam, sorted_spam):
     with open(path + 'v2_spam_from_%s.txt' % target_word_name, 'w') as outfile:
         outfile.write('There are %r tweets from %r, and they are %r spam' % (total_data_count, target_word_name, percent_spam * 100) + '\n')

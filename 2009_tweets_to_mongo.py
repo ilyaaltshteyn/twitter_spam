@@ -8,9 +8,6 @@ client = MongoClient()
 db = client.tweets
 collect = db.sample_from_2009
 
-def tweet_to_db(tweet):
-    collect.insert(tweet)
-
 
 file_path = "/Users/ilya/Projects/twitter_spam/2009_data.txt"
 with open(file_path, 'r') as infile:
@@ -30,17 +27,6 @@ with open(file_path, 'r') as infile:
                 if single_tweet['text'] == 'No Post Title':
                     break
                 else:
-                    tweet_to_db(single_tweet)
+                    collect.insert(single_tweet)
                     break
-
-
-
-
-
-
-
-
-
-
-# found = collect.insert()
 
