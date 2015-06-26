@@ -15,4 +15,3 @@ with open(path + filename, 'r') as infile:
             collect.insert(tweet)
         except:
             continue
-

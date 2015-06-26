@@ -57,6 +57,3 @@ def printer(path, target_word_name, total_data_count, percent_spam, sorted_spam)
 
 for target_word in target_words:
     printer(path, target_word, len(target_word_data[target_word]), spam_percent[target_word], spam_tweets[target_word])
-
-
-

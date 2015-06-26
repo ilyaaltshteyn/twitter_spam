@@ -111,4 +111,3 @@ with open('spam_per_hour.csv', 'w') as outfile:
     outfile.write('hour,spam_percent\n')
     for x in spam_percent:
         outfile.write(str(x[0]) + ',' + str(x[1]) + '\n')
-

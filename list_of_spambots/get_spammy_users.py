@@ -29,7 +29,8 @@ print 'stage 1 complete'
 
 detected_spam_tweets_count = len(tweets)
 # Get the indices for the usernames and tweet texts of tweets that aren't about
-# how many followers they gained/lost that day and aren't a retweet of the horoscope:
+# how many followers they gained/lost that day and aren't a retweet of the horoscope,
+# a post of a new photo or video, etc:
 spam_user_indices = []
 for x in range(len(tweets)):
     if x % 1000 == 0: print 'Got indices for %r usernames' % x
@@ -54,10 +55,6 @@ for x in range(len(tweets)):
     if real_human == 0:
         spam_user_indices.append(x)
 
-# Store the number of tweets that you threw out because they were from non-bots:
-# thrown_out_spam_tweets_count = detected_spam_tweets_count - len(spam_user_indices)
-# You threw out 1013 tweets
-
 # Now get usernames and statuses counts of spambots:
 spambot_usernames = []
 # spambot_username_statuses_counts = [] # The mean of this is about 25k
@@ -73,34 +70,9 @@ for i in spam_user_indices:
     elif users[i]['screen_name'] not in spambot_usernames and users[i]['statuses_count'] <= 100:
         count_of_spam_tweets_by_humans += 1
 
-# print np.mean(np.array(spambot_username_statuses_counts)) # Spambots mean tweets count = 36611
-# print np.median(np.array(spambot_username_statuses_counts)) # Spambots median tweets count = 22182
 print 'number of spambots in dataset: %r' % len(set(spambot_usernames)) # Number of spambots in dataset = 17591
 print 'stage 2 complete'
 
 with open('spambots_list.txt', 'w') as outfile:
     for spambot in spambot_usernames:
         outfile.write(spambot + '\n')
-
-# Now find out how many statuses there are by the spambots in the dataset:
-# all_spam = []
-# counter = 0
-# for username in set(spambot_usernames):
-#     counter += 1
-#     if counter % 1000 == 0 : print 'looked through %r users' % counter
-#     found = collect.find({ 'user.screen_name' : username})
-#     while found.alive == True:
-#         all_spam.append(found.next()['text'])
-
-# print len(all_spam) # This is the number of spam tweets by the spambots = 55385
-# complete_spam_list_length = len(all_spam) + thrown_out_spam_tweets_count + count_of_spam_tweets_by_humans
-# all_tweets_count = collect.count({'spam_rating' : {'$exists' : True}})
-
-# 10.75% are spam if we consider any tweet from a bot as spam:
-# print float(complete_spam_list_length) / all_tweets_count 
-
-# 8.88% are spam if we just look at the spam that the approx nearest neighbors search found:
-# print float(collect.count({'spam_rating' : 1})) / ( collect.count({'spam_rating' : 1}) + collect.count({'spam_rating' : 0}))
-
-
-
