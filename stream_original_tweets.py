@@ -20,12 +20,7 @@ api_details = []
 with open(api_details_path + '/api_details.txt', 'r') as a:
     info = a.readlines()
     api_details.append(info)
-api_details = api_details[0][0].split(',')
-
-consumer_key = api_details[0]
-consumer_secret = api_details[1]
-access_token_key = api_details[2]
-access_token_secret = api_details[3]
+consumer_key, consumer_secret, access_token_key, access_token_secret = api_details[0][0].split(',')
 
 while True:
     try:
