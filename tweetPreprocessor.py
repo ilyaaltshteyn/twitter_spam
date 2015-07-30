@@ -32,24 +32,23 @@ class singleTweet:
     
     def __init__(self, tweet):
         """Makes the tweet a class variable and defines some regex for use in 
-        stripping later."""
+        stripping urls, usernames and punctuation later."""
 
         self.tweet = tweet
         self.urls = re.compile(r"(http\S+ ?)|(\S+\.com?\S+ ?)|(\S+\.ly?\S+ ?)|(\S+\.net?\S+ ?)|(\S+\.gov?\S+ ?)|(\S+\.edu?\S+ ?)|(\S+\.org?\S+ ?)")
         self.username = re.compile(r"@\S+ ?")
+        self.punctuation = re.compile('[%s]' % re.escape(string.punctuation))
+        self.punctuation_sans_hashtags = re.compile('[%s]' % 
+                                           re.escape(string.punctuation.replace('#', '')))
 
     def strip_non_ascii(self):
-        """Replaces all non-ascii characters in the tweet with a space. Returns
-        tweet."""
+        """Replaces all non-ascii characters in the tweet with a space."""
+        
         self.tweet = ''.join([i if ord(i) < 128 else ' ' for i in self.tweet])
-
-    punctuation = re.compile('[%s]' % re.escape(string.punctuation))
-    punctuation_sans_hashtags = re.compile('[%s]' % 
-                                           re.escape(string.punctuation.replace('#', '')))
 
     def strip_punctuation(self, strip_hashtags = True):
         """Removes punctuation. If strip_hashtags = True, then also removes 
-        hashtags. Returns tweet."""
+        hashtag characters (but not the words in the hasthtag)."""
 
         if strip_hashtags:
             self.tweet = self.punctuation.sub('', self.tweet)
@@ -63,7 +62,7 @@ class singleTweet:
 
     def strip_links(self):
         """Uses self.urls regex to remove anything that looks like a link in 
-        the tweet. Identifies text that looks like a tweet using URL suffixes."""
+        the tweet."""
 
         self.tweet = self.urls.sub('', self.tweet)
 
@@ -78,14 +77,15 @@ class singleTweet:
         self.tweet = self.tweet.replace('\n', '')
 
     def strip_mentions(self):
-        """Uses teh self.username regex to strip @ mentions (i.e. usernames of 
+        """Uses the self.username regex to strip @ mentions (i.e. usernames of 
         other Twitter users) from the tweet."""
 
         self.tweet = self.username.sub('', self.tweet)
 
     def strip_and_lower(self, strip_non_ascii = 0, strip_punctuation = 0, strip_mentions = 1):
         """Performs all stripping functions (including stripping non-ascii chars)
-        and lowercases the tweet. Does NOT convert it to utf-8."""
+        and lowercases the tweet. Does NOT convert it to utf-8. Note that by default it doesn't
+        strip punctuation or non-ascii characters, but can do so on request."""
 
         if strip_mentions == 1:
             self.strip_mentions()
@@ -99,8 +99,14 @@ class singleTweet:
 
 
 class tweetDatabase:
-    """Takes a list of tweets as input and does operations on the entire list.
-    Inside, it's doing the operations on batches of the tweets. 
+    """
+    Notes for future development: make this accept a file rather than a list, so
+    the tweets don't have to be stored in memory!
+    
+    Takes a list of tweets as input and does operations on the entire list.
+    Inside, it's doing the operations on batches of the tweets, so you can pass
+    a list of as many tweets as you want to it and it'll just work with batches
+    of a specified size.
 
     When initializing, you can set the batch_size. The larger the batch_size, 
     the slower the spam detection will run, but the more spam it will capture. 
@@ -108,7 +114,7 @@ class tweetDatabase:
     detected. Batch sizes smaller than 5,000 detect less than 1/3 of all possible 
     spam.
                 ------------------------------------------------
-    Useful methods (not all methods, bc some are for internal use):
+    Useful methods (not all methods, bc some are only used internally):
     
     .tweets                 The original tweets that it took as input
     .batch_size             How many tweets the spam detector looks through to 
@@ -145,7 +151,9 @@ class tweetDatabase:
         self.spam_indices = []
         self.tweets_modified = []
         # custom_stop_words includes common twitter handles and words that tend
-        # to be only in non-spam tweets that are misclassified as spam.
+        # to be only in non-spam tweets that are misclassified as spam. Adding
+        # words that are common in false-positive spam identifications can improve
+        # spam classification precision.
         self.custom_stop_words = ['katyperry', 'justinbieber', 'barackobama', \
         'taylorswift13', 'youtube', 'ladygaga', 'rihanna', 'jtimberlake', 'theellenshow', \
         'britneyspears', 'instagram', 'twitter', 'cristiano', 'jlo', 'kimkardashian', \
@@ -205,7 +213,7 @@ class tweetDatabase:
             stripped_lowered_tweets = self.strip_and_lower(tweets = tweet_batch, apply_on_copy = 1)
             
             list_of_batches.append((tweet_batch, stripped_lowered_tweets))
-
+            
             start += self.batch_size
 
         return list_of_batches
