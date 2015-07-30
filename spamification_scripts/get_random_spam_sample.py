@@ -1,5 +1,7 @@
 # This script grabs a random bunch of spam tweets from the mongo database and
 # writes them to a file. Useful for inspecting the output of the spam detector.
+# CAUTION: randomness may be affected by what tweets are indexed by, because
+# mongo stores indices in order.
 
 import tweetPreprocessor
 from pymongo import MongoClient
