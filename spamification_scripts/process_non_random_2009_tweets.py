@@ -2,9 +2,6 @@
 # collection and spamifies them.
 import tweetPreprocessor
 from pymongo import MongoClient
-import time
-import math
-from random import random
 
 # Establish mongo info:
 client = MongoClient()
