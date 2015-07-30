@@ -2,7 +2,8 @@
 # simple rules to determine who is a bot:
 # 1. User has at least one spam tweet in the test_collection or random_sample_remote_computer
 # 2. User's spam tweet is not about how many twitter followers they have.
-# 3. User has at least 10k tweets.
+# 3. User has at least 100 tweets. I experimented with different numbers here.
+# So much room for improvement to the above rules, so little time.
 
 from pymongo import MongoClient
 import time
@@ -30,7 +31,8 @@ print 'stage 1 complete'
 detected_spam_tweets_count = len(tweets)
 # Get the indices for the usernames and tweet texts of tweets that aren't about
 # how many followers they gained/lost that day and aren't a retweet of the horoscope,
-# a post of a new photo or video, etc:
+# a post of a new photo or video, etc. More stop words can be added here to prevent
+# false-positive spambot ids.
 spam_user_indices = []
 for x in range(len(tweets)):
     if x % 1000 == 0: print 'Got indices for %r usernames' % x
@@ -61,6 +63,7 @@ spambot_usernames = []
 count_of_spam_tweets_by_humans = 0
 counter = 0
 print 'About to look through %r users to find spambots and count of spam tweets by humans' % len(spam_user_indices)
+
 for i in spam_user_indices:
     counter += 1
     if counter % 1000 == 0: print 'Got usernames and statuses counts of %r spammy users/spambots' % counter
@@ -71,7 +74,6 @@ for i in spam_user_indices:
         count_of_spam_tweets_by_humans += 1
 
 print 'number of spambots in dataset: %r' % len(set(spambot_usernames)) # Number of spambots in dataset = 17591
-print 'stage 2 complete'
 
 with open('spambots_list.txt', 'w') as outfile:
     for spambot in spambot_usernames:
